@@ -47,6 +47,7 @@ services:
       - ORCHESTRATOR_URL=http://orchestrator:8080
       - FRAME_MIN_INTERVAL_MS=10
       - MAX_WARNINGS=5
+      - VOICE_CONTROL_URL=http://voice-control:8085
     ports:
       - "8081:8081"
     networks: [bmo_net]
