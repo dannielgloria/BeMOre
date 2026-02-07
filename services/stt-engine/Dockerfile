@@ -2,7 +2,12 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+# ---- system deps for native extensions (webrtcvad) ----
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    make \
+    libc-dev \
     wget \
  && rm -rf /var/lib/apt/lists/*
 

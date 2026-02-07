@@ -1,5 +1,8 @@
 fastapi==0.115.0
 uvicorn==0.30.6
+pydantic==2.8.2
+webrtcvad==2.0.10
+
 opentelemetry-api==1.26.0
 opentelemetry-sdk==1.26.0
 opentelemetry-exporter-otlp==1.26.0
