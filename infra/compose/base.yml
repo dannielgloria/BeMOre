@@ -100,3 +100,16 @@ services:
       otel-collector:
         condition: service_started
 
+  stt-engine:
+    build: ../../services/stt-engine
+    container_name: bmo-stt-engine
+    ports:
+      - "8086:8086"
+    networks:
+      - bmo_net
+    depends_on:
+      - otel-collector
+    environment:
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4317
+      OTEL_SERVICE_NAME: bmo-stt-engine
+

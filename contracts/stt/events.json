@@ -1,0 +1,25 @@
+{
+  "audio.segment.ready": {
+    "session_id": "string",
+    "segment_id": "string",
+    "start_ms": "int",
+    "end_ms": "int",
+    "audio_format": "pcm16",
+    "sample_rate": 16000
+  },
+
+  "stt.partial": {
+    "session_id": "string",
+    "segment_id": "string",
+    "text": "string",
+    "confidence": "float"
+  },
+
+  "stt.final": {
+    "session_id": "string",
+    "segment_id": "string",
+    "text": "string",
+    "confidence": "float",
+    "language": "string"
+  }
+}
