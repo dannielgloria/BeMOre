@@ -72,3 +72,30 @@ services:
       - "4318:4318"
     networks: [bmo_net]
     restart: unless-stopped
+
+  voice-control:
+    build:
+      context: ../../services/voice-control
+      dockerfile: Dockerfile
+    environment:
+      - BMO_ENV=dev
+      - OTEL_SERVICE_NAME=bmo-voice-control
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
+      - VOICE_PORT=8085
+    ports:
+      - "8085:8085"
+    networks: [bmo_net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8085/health"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    depends_on:
+      otel-collector:
+        condition: service_started
+
