@@ -9,9 +9,10 @@ from opentelemetry import trace
 from opentelemetry.sdk.resources import Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
-
 from opentelemetry.exporter.otlp.proto.grpc.trace_exporter import OTLPSpanExporter
 from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+
+import uvicorn
 
 
 def setup_tracing() -> None:
@@ -20,7 +21,9 @@ def setup_tracing() -> None:
 
     resource = Resource.create({"service.name": service_name})
     provider = TracerProvider(resource=resource)
-    processor = BatchSpanProcessor(OTLPSpanExporter(endpoint=endpoint, insecure=True))
+    processor = BatchSpanProcessor(
+        OTLPSpanExporter(endpoint=endpoint, insecure=True)
+    )
     provider.add_span_processor(processor)
     trace.set_tracer_provider(provider)
 
@@ -48,3 +51,25 @@ def new_session():
                 "created_at": int(time.time()),
             }
         )
+        
+@app.post("/audio/session/register")
+def register_audio_session(payload: dict):
+    session_id = payload.get("session_id")
+    if not session_id:
+        return JSONResponse({"error": "missing session_id"}, status_code=400)
+
+    with tracer.start_as_current_span("audio.session.registered") as span:
+        span.set_attribute("bmo.session_id", session_id)
+
+    return {"registered": True, "session_id": session_id}
+
+
+
+if __name__ == "__main__":
+    port = int(os.getenv("ORCH_PORT", "8080"))
+    uvicorn.run(
+        "app.main:app",
+        host="0.0.0.0",
+        port=port,
+        log_level="info",
+    )

@@ -31,13 +31,44 @@ services:
       otel-collector:
         condition: service_started
 
+  audio-gateway:
+    build:
+      context: ../../services/audio-gateway
+      dockerfile: Dockerfile
+    environment:
+      - BMO_ENV=dev
+      - OTEL_SERVICE_NAME=bmo-audio-gateway
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+      - OTEL_EXPORTER_OTLP_PROTOCOL=grpc
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_METRICS_EXPORTER=none
+      - OTEL_LOGS_EXPORTER=none
+      - AUDIO_PORT=8081
+      - ORCHESTRATOR_URL=http://orchestrator:8080
+      - FRAME_MIN_INTERVAL_MS=10
+      - MAX_WARNINGS=5
+    ports:
+      - "8081:8081"
+    networks: [bmo_net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8081/health"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    depends_on:
+      orchestrator:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+
   otel-collector:
     image: otel/opentelemetry-collector:latest
     command: ["--config=/etc/otelcol/config.yaml"]
     volumes:
       - ../../infra/observability/otel-collector/config.yaml:/etc/otelcol/config.yaml:ro
     ports:
-      - "4317:4317" # OTLP gRPC
-      - "4318:4318" # OTLP HTTP (por si luego lo necesitas)
+      - "4317:4317"
+      - "4318:4318"
     networks: [bmo_net]
     restart: unless-stopped

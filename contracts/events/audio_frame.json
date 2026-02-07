@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AudioFrame",
+  "type": "object",
+  "required": ["type", "session_id", "timestamp_ms", "seq", "payload"],
+  "properties": {
+    "type": {
+      "const": "audio_frame"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "timestamp_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "seq": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "payload": {
+      "type": "string",
+      "description": "Base64 PCM or fake payload"
+    }
+  }
+}
