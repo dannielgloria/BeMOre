@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VoiceEvent",
+  "type": "object",
+  "required": ["type", "session_id", "timestamp_ms"],
+  "properties": {
+    "type": {
+      "enum": [
+        "audio_stream_started",
+        "audio_stream_ended",
+        "speech_detected",
+        "speech_finalized",
+        "llm_response_ready",
+        "tts_started",
+        "tts_finished",
+        "barge_in",
+        "cancel"
+      ]
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "timestamp_ms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  }
+}

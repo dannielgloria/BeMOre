@@ -1,0 +1,13 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VoiceTransition",
+  "type": "object",
+  "required": ["from", "event", "to"],
+  "properties": {
+    "from": { "$ref": "./voice_state.json" },
+    "event": {
+      "type": "string"
+    },
+    "to": { "$ref": "./voice_state.json" }
+  }
+}
